@@ -5,13 +5,16 @@ public class Enemy : Foe
 {
     private ProjectileSpawner m_ProjectileSpawner;
     [SerializeField] private Transform m_ProjectileShoot;
-    [Range(5.5f, 9.1f)] [SerializeField] private float m_FireRate = 6.0f;
+    [Range(1.0f, 5.0f)] [SerializeField] private float m_FireRate = 3.5f;
 
+    private GameManager m_GameManager;
+    private bool m_IsInGamePlay;
 
     private void Start()
     {
-        currentHealth = 100;
-        speed = 10;
+        m_GameManager = FindObjectOfType<GameManager>();
+        if (m_GameManager == null) { Debug.LogError("GameManager is NULL"); }
+        m_GameManager.OnGameEnded += OnGameEnded;
 
         foeSpawner = FindObjectOfType<FoeSpawner>();
         if (foeSpawner == null) { Debug.LogError("FoeSpawner is NULL"); }
@@ -23,11 +26,14 @@ public class Enemy : Foe
     public override void Init()
     {
         base.Init();
+        m_IsInGamePlay = true;
         StartCoroutine(IE_ShootProjectiles());
     }
 
     private void Update()
     {
+        if (!m_IsInGamePlay) { return; }
+
         Move();
     }
 
@@ -48,14 +54,14 @@ public class Enemy : Foe
 
     protected override void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Triggered");
+        base.OnTriggerEnter(other);
     }
 
     public IEnumerator IE_ShootProjectiles()
     {
         yield return new WaitForSeconds(1);
 
-        while (true)
+        while (m_IsInGamePlay)
         {
             Projectile projectile = m_ProjectileSpawner.SpawnProjectile();
             projectile.transform.SetPositionAndRotation(m_ProjectileShoot.position, Quaternion.identity);
@@ -65,5 +71,14 @@ public class Enemy : Foe
             yield return new WaitForSeconds(t);
         }
     }
+
+    private void OnGameEnded()
+    {
+        m_IsInGamePlay = false;
+        StopAllCoroutines();
+    }
+
+    private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
+
 }
 

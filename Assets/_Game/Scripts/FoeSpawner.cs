@@ -15,17 +15,27 @@ public class FoeSpawner : MonoBehaviour
     private EnemySpawner m_EnemySpawner;
     private ObstacleSpawner m_ObstacleSpawner;
 
+    private GameManager m_GameManager;
+
+    private bool m_IsInGamePlay;
+
     private void Start()
     {
         m_EnemySpawner = new EnemySpawner(m_EnemyPrefab);
         m_ObstacleSpawner = new ObstacleSpawner(m_ObstaclePrefab);
+
+        m_GameManager = FindObjectOfType<GameManager>();
+        if (m_GameManager == null) { Debug.LogError("GameManager is NULL"); }
+        m_GameManager.OnGameEnded += OnGameEnded;
     }
 
     public IEnumerator IE_SpawnFoes()
     {
+        m_IsInGamePlay = true;
+
         yield return new WaitForSeconds(1);
 
-        while (true)
+        while (m_IsInGamePlay)
         {
             Vector3 spawnPos = new Vector3(Random.Range(-m_SpawnPosX, m_SpawnPosX), 0, m_SpawnPosZ);
             m_FoeToSpawn = Random.Range(0, 2) == 0 ? m_EnemyPrefab : m_ObstaclePrefab;
@@ -50,6 +60,15 @@ public class FoeSpawner : MonoBehaviour
         if (foe is Enemy) { m_EnemySpawner.ReleaseEnemy(foe as Enemy); }
         else if (foe is Obstacle) { m_ObstacleSpawner.ReleaseObstacle(foe as Obstacle); }
     }
+
+    private void OnGameEnded()
+    {
+        m_IsInGamePlay = false;
+        StopAllCoroutines();
+    }
+
+    private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
+
 }
 
 

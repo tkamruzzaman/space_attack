@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         m_Player = FindObjectOfType<Player>();
-        if(m_Player == null) { Debug.LogError("Player is NULL"); }
+        if (m_Player == null) { Debug.LogError("Player is NULL"); }
 
         m_FoeSpawner = FindObjectOfType<FoeSpawner>();
         if (m_FoeSpawner == null) { Debug.LogError("FoeSpawner is NULL"); }
@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            m_IsPaused = !m_IsPaused;
             DoPaused(m_IsPaused);
         }
     }
@@ -36,23 +35,24 @@ public class GameManager : MonoBehaviour
     {
         //enable player movement
         StartCoroutine(m_Player.IE_ShootProjectiles());
-        StartCoroutine(m_FoeSpawner.IE_SpawnFoes());
         // start spawning foes
+        StartCoroutine(m_FoeSpawner.IE_SpawnFoes());
+
         OnGameStarted?.Invoke();
     }
 
 
-    private void DoPaused(bool isPaused)
+    public void DoPaused(bool isPaused)
     {
-        Time.timeScale = isPaused ? 0 : 1;
-        OnGamePaused?.Invoke(isPaused);
+        m_IsPaused = !m_IsPaused;
+
+        Time.timeScale = m_IsPaused ? 0 : 1;
+
+        OnGamePaused?.Invoke(m_IsPaused);
     }
 
     public void DoGameOver()
     {
-        m_Player.StopAllCoroutines();
-        m_FoeSpawner.StopAllCoroutines();
-
         OnGameEnded?.Invoke();
     }
 

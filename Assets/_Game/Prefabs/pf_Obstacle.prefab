@@ -111,4 +111,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 25
-  speed: 5
+  speed: 7.5
+  collisionDamage: 25

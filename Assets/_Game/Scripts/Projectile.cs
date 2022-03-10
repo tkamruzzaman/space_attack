@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    /*[SerializeField]*/ private float m_Bound = 10.0f;
+    /*[SerializeField]*/
+    private float m_Bound = 10.0f;
     [SerializeField] private float m_Speed = 5.0f;
 
     private int m_Direction = 1;
@@ -12,7 +13,7 @@ public class Projectile : MonoBehaviour
     private ProjectileType m_ProjectileType;
     private TrailRenderer m_TrailRenderer;
 
-    void Awake()
+    private void Awake()
     {
         m_TrailRenderer = transform.GetComponentInChildren<TrailRenderer>();
     }
@@ -55,10 +56,17 @@ public class Projectile : MonoBehaviour
         {
             if (other.gameObject.layer == PhysicsLayers.FoeLayer)
             {
-                //Foe foe = other.GetComponent<Foe>();
                 if (other.TryGetComponent(out Foe foe))
                 {
                     foe.TakeDamage(m_DamageCapacity);
+                }
+                Destroy();
+            }
+            if (other.gameObject.layer == PhysicsLayers.ProjectileLayer)
+            {
+                if (other.TryGetComponent(out Projectile projectile))
+                {
+                    projectile.Destroy();
                 }
                 Destroy();
             }

@@ -2,21 +2,30 @@ using UnityEngine;
 
 public class Obstacle : Foe
 {
+    private GameManager m_GameManager;
+    private bool m_IsInGamePlay;
+
     private void Start()
     {
-        currentHealth = 25;
-        speed = 5;
+        m_GameManager = FindObjectOfType<GameManager>();
+        if (m_GameManager == null) { Debug.LogError("GameManager is NULL"); }
+        m_GameManager.OnGameEnded += OnGameEnded;
 
         foeSpawner = FindObjectOfType<FoeSpawner>();
-        if (foeSpawner == null)
-        {
-            Debug.LogError("FoeSpawner is NULL");
-        }
+        if (foeSpawner == null) { Debug.LogError("FoeSpawner is NULL"); }
     }
 
     private void Update()
     {
+        if (!m_IsInGamePlay) { return; }
+
         Move();
+    }
+
+    public override void Init()
+    {
+        base.Init();
+        m_IsInGamePlay = true;
     }
 
     protected override void Move()
@@ -36,6 +45,14 @@ public class Obstacle : Foe
 
     protected override void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Triggered");
+        base.OnTriggerEnter(other);
     }
+
+    private void OnGameEnded()
+    {
+        m_IsInGamePlay = false;
+    }
+
+    private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
+
 }

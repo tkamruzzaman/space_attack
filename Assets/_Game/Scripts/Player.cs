@@ -21,16 +21,22 @@ public class Player : MonoBehaviour
     [SerializeField] private int m_CollisionDamage = 50;
     public int CollisionDamage { get => m_CollisionDamage; private set => m_CollisionDamage = value; }
 
+    private bool m_IsInGamePlay;
+
     private void Start()
     {
         m_GameManager = FindObjectOfType<GameManager>();
         if (m_GameManager == null) { Debug.LogError("GameManager is NULL"); }
+        m_GameManager.OnGameEnded += OnGameEnded;
+
         m_ProjectileSpawner = FindObjectOfType<ProjectileSpawner>();
         if (m_ProjectileSpawner == null) { Debug.LogError("Projectile Spawner is NULL"); }
     }
 
     private void Update()
     {
+        if (!m_IsInGamePlay) { return; }
+
         Movement();
     }
 
@@ -64,9 +70,11 @@ public class Player : MonoBehaviour
 
     public IEnumerator IE_ShootProjectiles()
     {
+        m_IsInGamePlay = true;
+
         yield return new WaitForSeconds(1);
 
-        while (true)
+        while (m_IsInGamePlay)
         {
             Projectile projectile = m_ProjectileSpawner.SpawnProjectile();
             projectile.transform.SetPositionAndRotation(m_ProjectileShoot.position, Quaternion.identity);
@@ -88,4 +96,12 @@ public class Player : MonoBehaviour
             m_GameManager.DoGameOver();
         }
     }
+
+    private void OnGameEnded()
+    {
+        m_IsInGamePlay = false;
+        StopAllCoroutines();
+    }
+
+    private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
 }

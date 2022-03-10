@@ -5,5 +5,4 @@
     public const int CollectableLayer = 8;
 
     public const int ProjectileLayer = 15;
-
 }

@@ -9,7 +9,7 @@ public abstract class Foe : MonoBehaviour
     private float m_Bound = 15.0f;
     protected FoeSpawner foeSpawner;
 
-    public virtual void Init()    {    }
+    public virtual void Init() { }
 
     protected virtual void Move()
     {
@@ -30,21 +30,22 @@ public abstract class Foe : MonoBehaviour
 
     private void Destroy()
     {
+        if (this is Enemy) { }
+        else if (this is Obstacle) { }
+
         foeSpawner.DeSpawnFoe(this);
     }
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == PhysicsLayers.PlayerLayer)
+        if (other.gameObject.layer == PhysicsLayers.PlayerLayer)
         {
-            if(other.TryGetComponent(out Player player))
+            if (other.TryGetComponent(out Player player))
             {
                 TakeDamage(player.CollisionDamage);
                 player.TakeDamage(collisionDamage);
             }
         }
-
     }
-
 }
 

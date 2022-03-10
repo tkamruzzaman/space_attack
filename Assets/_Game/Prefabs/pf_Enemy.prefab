@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 50
-  speed: 3
+  speed: 2
   collisionDamage: 25
   m_ProjectileShoot: {fileID: 5010160815666968325}
-  m_FireRate: 6
+  m_FireRate: 1.5
