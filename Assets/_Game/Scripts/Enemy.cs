@@ -10,6 +10,8 @@ public class Enemy : Foe
     private GameManager m_GameManager;
     private bool m_IsInGamePlay;
 
+    [SerializeField] private Transform[] m_MeshTransforms;
+
     private void Start()
     {
         m_GameManager = FindObjectOfType<GameManager>();
@@ -26,6 +28,7 @@ public class Enemy : Foe
     public override void Init()
     {
         base.Init();
+        ActiveMeshRandomly();
         m_IsInGamePlay = true;
         StartCoroutine(IE_ShootProjectiles());
     }
@@ -79,6 +82,15 @@ public class Enemy : Foe
     }
 
     private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
+
+    private void ActiveMeshRandomly()
+    {
+        foreach (Transform item in m_MeshTransforms)
+        {
+            item.gameObject.SetActive(false);
+        }
+        m_MeshTransforms[Random.Range(0, m_MeshTransforms.Length)].gameObject.SetActive(true);
+    }
 
 }
 

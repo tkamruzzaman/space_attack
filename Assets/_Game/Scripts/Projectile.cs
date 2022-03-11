@@ -56,7 +56,7 @@ public class Projectile : MonoBehaviour
         {
             if (other.gameObject.layer == PhysicsLayers.FoeLayer)
             {
-                if (other.TryGetComponent(out Foe foe))
+                if (other.transform.parent.TryGetComponent(out Foe foe))
                 {
                     foe.TakeDamage(m_DamageCapacity);
                 }
@@ -64,7 +64,7 @@ public class Projectile : MonoBehaviour
             }
             if (other.gameObject.layer == PhysicsLayers.ProjectileLayer)
             {
-                if (other.TryGetComponent(out Projectile projectile))
+                if (other.transform.parent.TryGetComponent(out Projectile projectile))
                 {
                     projectile.Destroy();
                 }
@@ -75,7 +75,7 @@ public class Projectile : MonoBehaviour
         {
             if (other.gameObject.layer == PhysicsLayers.PlayerLayer)
             {
-                if (other.TryGetComponent(out Player player))
+                if (other.transform.parent.TryGetComponent(out Player player))
                 {
                     player.TakeDamage(m_DamageCapacity);
                 }

@@ -40,7 +40,7 @@ public abstract class Foe : MonoBehaviour
     {
         if (other.gameObject.layer == PhysicsLayers.PlayerLayer)
         {
-            if (other.TryGetComponent(out Player player))
+            if (other.transform.parent.TryGetComponent(out Player player))
             {
                 TakeDamage(player.CollisionDamage);
                 player.TakeDamage(collisionDamage);

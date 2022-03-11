@@ -4,6 +4,7 @@ public class Obstacle : Foe
 {
     private GameManager m_GameManager;
     private bool m_IsInGamePlay;
+    [SerializeField] Transform[] m_MeshTransforms;
 
     private void Start()
     {
@@ -25,6 +26,7 @@ public class Obstacle : Foe
     public override void Init()
     {
         base.Init();
+        ActiveMeshRandomly();
         m_IsInGamePlay = true;
     }
 
@@ -55,4 +57,12 @@ public class Obstacle : Foe
 
     private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
 
+    private void ActiveMeshRandomly()
+    {
+        foreach (Transform item in m_MeshTransforms)
+        {
+            item.gameObject.SetActive(false);
+        }
+        m_MeshTransforms[Random.Range(0, m_MeshTransforms.Length)].gameObject.SetActive(true);
+    }
 }
