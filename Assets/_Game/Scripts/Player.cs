@@ -118,7 +118,7 @@ public class Player : MonoBehaviour, IGetHealthSystem
     public void DoDamage(int damage) { }
     public void TakeDamage(int damage)
     {
-        m_healthSystem.Damage(damage);
+        m_healthSystem.Damage(damage); // ABSTRACTION
     }
 
     private void OnGameEnded()

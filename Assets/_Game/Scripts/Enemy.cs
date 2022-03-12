@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : Foe
+public class Enemy : Foe // INHERITANCE
 {
     private ProjectileSpawner m_ProjectileSpawner;
     [SerializeField] private Transform m_ProjectileShoot;
@@ -40,7 +40,7 @@ public class Enemy : Foe
         Move();
     }
 
-    protected override void Move()
+    protected override void Move() // POLYMORPHISM
     {
         base.Move();
     }

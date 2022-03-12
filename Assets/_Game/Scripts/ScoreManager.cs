@@ -4,7 +4,7 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     private static ScoreManager m_Instance;
-    public static ScoreManager Instance { get => m_Instance; private set => m_Instance = value; }
+    public static ScoreManager Instance { get => m_Instance; private set => m_Instance = value; } // ENCAPSULATION
     private const string KEY_BEST_SCORE = "key_best_score_";
     private int m_Score;
     private int m_BestScore { get => PlayerPrefs.GetInt(KEY_BEST_SCORE, 0); set => PlayerPrefs.SetInt(KEY_BEST_SCORE, value); }

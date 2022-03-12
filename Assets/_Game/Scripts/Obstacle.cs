@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Obstacle : Foe
+public class Obstacle : Foe // INHERITANCE
 {
     private GameManager m_GameManager;
     private bool m_IsInGamePlay;
