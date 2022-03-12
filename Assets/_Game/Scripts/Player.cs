@@ -1,7 +1,9 @@
+using CodeMonkey.HealthSystemCM;
+using System;
 using System.Collections;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IGetHealthSystem
 {
     private float m_HorizontalInput;
     private float m_VerticalInput;
@@ -15,14 +17,25 @@ public class Player : MonoBehaviour
     private GameManager m_GameManager;
     private ProjectileSpawner m_ProjectileSpawner;
 
-    [SerializeField] private float m_CurrentHealth = 100;
+    [SerializeField] private float m_MaxHealth = 100;
     [Range(7.5f, 9.1f)] [SerializeField] private float m_FireRate = 8.0f;
 
     [SerializeField] private int m_CollisionDamage = 50;
-    [SerializeField] ParticleSystem m_DeadParticle;
+    [SerializeField] private ParticleSystem m_DeadParticle;
     public int CollisionDamage { get => m_CollisionDamage; private set => m_CollisionDamage = value; }
 
     private bool m_IsInGamePlay;
+
+    private HealthSystem m_healthSystem;
+
+    private void Awake()
+    {
+        m_healthSystem = new HealthSystem(m_MaxHealth);
+
+        m_healthSystem.OnDead += HealthSystem_OnDead;
+        m_healthSystem.OnDamaged += HealthSystem_OnDamaged;
+        m_healthSystem.OnHealed += HealthSystem_OnHealed;
+    }
 
     private void Start()
     {
@@ -32,6 +45,22 @@ public class Player : MonoBehaviour
 
         m_ProjectileSpawner = FindObjectOfType<ProjectileSpawner>();
         if (m_ProjectileSpawner == null) { Debug.LogError("Projectile Spawner is NULL"); }
+    }
+
+    private void HealthSystem_OnHealed(object sender, EventArgs e)
+    {
+    }
+
+    private void HealthSystem_OnDamaged(object sender, EventArgs e)
+    {
+    }
+
+    private void HealthSystem_OnDead(object sender, EventArgs e)
+    {
+        m_MeshTranform.gameObject.SetActive(false);
+        m_DeadParticle.gameObject.SetActive(true);
+        m_DeadParticle.Play();
+        m_GameManager.DoGameOver();
     }
 
     private void Update()
@@ -89,16 +118,7 @@ public class Player : MonoBehaviour
     public void DoDamage(int damage) { }
     public void TakeDamage(int damage)
     {
-        if (m_CurrentHealth > 0) { m_CurrentHealth -= damage; }
-
-        if (m_CurrentHealth <= 0)
-        {
-            m_CurrentHealth = 0;
-            m_MeshTranform.gameObject.SetActive(false);
-            m_DeadParticle.gameObject.SetActive(true);
-            m_DeadParticle.Play();
-            m_GameManager.DoGameOver();
-        }
+        m_healthSystem.Damage(damage);
     }
 
     private void OnGameEnded()
@@ -107,5 +127,14 @@ public class Player : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private void OnDestroy() => m_GameManager.OnGameEnded -= OnGameEnded;
+    private void OnDestroy()
+    {
+        m_GameManager.OnGameEnded -= OnGameEnded;
+
+        m_healthSystem.OnDead -= HealthSystem_OnDead;
+        m_healthSystem.OnDamaged -= HealthSystem_OnDamaged;
+        m_healthSystem.OnHealed -= HealthSystem_OnHealed;
+    }
+
+    public HealthSystem GetHealthSystem() => m_healthSystem;
 }

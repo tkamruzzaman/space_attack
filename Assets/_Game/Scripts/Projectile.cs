@@ -11,11 +11,13 @@ public class Projectile : MonoBehaviour
     [SerializeField] private int m_DamageCapacity = 10;
     private ProjectileSpawner m_ProjectileSpawner;
     private ProjectileType m_ProjectileType;
-    private TrailRenderer m_TrailRenderer;
+    //private TrailRenderer m_TrailRenderer;
+    private ParticleSystem m_TrailParticle;
 
     private void Awake()
     {
-        m_TrailRenderer = transform.GetComponentInChildren<TrailRenderer>();
+        //m_TrailRenderer = transform.GetComponentInChildren<TrailRenderer>();
+        m_TrailParticle = transform.GetComponentInChildren<ParticleSystem>();
     }
 
     private void Start()
@@ -29,14 +31,22 @@ public class Projectile : MonoBehaviour
 
     public void Init(ProjectileType projectileType)
     {
-        m_TrailRenderer.Clear();
+        //m_TrailRenderer.Clear();
         m_ProjectileType = projectileType;
 
         switch (m_ProjectileType)
         {
-            case ProjectileType.None: m_Direction = 0; break;
-            case ProjectileType.PlayerProjectile: m_Direction = 1; break;
-            case ProjectileType.FoeProjectile: m_Direction = -1; break;
+            case ProjectileType.None:
+                m_Direction = 0;
+                break;
+            case ProjectileType.PlayerProjectile:
+                m_Direction = 1;
+                m_TrailParticle.transform.localRotation = Quaternion.Euler(new Vector3(180, 0, 0));
+                break;
+            case ProjectileType.FoeProjectile:
+                m_Direction = -1;
+                m_TrailParticle.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                break;
         }
     }
 

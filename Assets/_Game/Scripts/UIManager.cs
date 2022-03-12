@@ -43,12 +43,21 @@ public class UIManager : MonoBehaviour
 
         m_GameManager.OnGamePaused += OnGamePaused;
         m_GameManager.OnGameEnded += OnGameEnded;
+
+        ScoreManager.Instance.OnScoreChange += SetGamePlayScoreText;
+        ScoreManager.Instance.OnBestScoreChange += SetGamePlayBestScoreText;
+
+        SetGamePlayScoreText(ScoreManager.Instance.GetScore());
+        SetGamePlayBestScoreText(ScoreManager.Instance.GetBestScore());
     }
 
     private void OnGamePaused(bool status) => PanelHandaler(isPaused: status, isGameOver: false);
 
     private void OnGameEnded()
     {
+        SetGameOverScoreText(ScoreManager.Instance.GetScore());
+        SetGameOverBestScoreText(ScoreManager.Instance.GetBestScore());
+
         m_GamePlayPanel.gameObject.SetActive(true);
         PanelHandaler(isPaused: false, isGameOver: true);
     }
@@ -69,6 +78,9 @@ public class UIManager : MonoBehaviour
 
         m_GameManager.OnGamePaused -= OnGamePaused;
         m_GameManager.OnGameEnded -= OnGameEnded;
+
+        ScoreManager.Instance.OnScoreChange -= SetGamePlayScoreText;
+        ScoreManager.Instance.OnBestScoreChange -= SetGamePlayBestScoreText;
     }
 
     public void SetGamePlayScoreText(int score) => m_GamePlayScoreText.text = "Score: " + score;
