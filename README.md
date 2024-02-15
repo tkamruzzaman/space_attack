@@ -1,11 +1,12 @@
-Microgame to demonstrate OOP theories.
+Microgame to demonstrate OOP theories. Avoid enemy fire. Shoot enemies and obstacles.
 
-Pathway: Unity Junior Programmer
-Mission: Apply object-oriented principles 
-Submission: Programming theory in action
+Pathway: Unity Junior Programmer.
+
+Mission: Apply object-oriented principles.
+
+Submission: Programming theory in action.
 
 Control: 'WASD' to move. 
-Avoid enemy fire. Shoot enemies and obstacles.
 
 Asset used: [POLYGON - Sci-Fi Space Pack](https://syntystore.com/products/polygon-sci-fi-space-pack)
 
